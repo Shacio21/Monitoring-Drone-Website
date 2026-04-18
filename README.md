@@ -1,6 +1,7 @@
 # 🚁 AgriDrone Monitor
 
 > A real-time agricultural drone monitoring platform for live telemetry, GPS tracking, and field surveillance — built for precision agriculture operations.
+<img width="1908" height="1079" alt="image" src="https://github.com/user-attachments/assets/c9a18efd-930e-4c8e-b9f8-8a074e721b92" />
 
 ![Tech Stack](https://img.shields.io/badge/Frontend-React%20%2B%20TypeScript-blue?style=flat-square&logo=react)
 ![Backend](https://img.shields.io/badge/Backend-FastAPI-green?style=flat-square&logo=fastapi)
