@@ -1,0 +1,285 @@
+/* ─────────────────────────────────────────
+   FONT
+───────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --accent:      #00ff88;
+  --accent-blue: #00d4ff;
+  --glass-bg:    rgba(5, 8, 12, 0.55);
+  --glass-bd:    rgba(255, 255, 255, 0.08);
+  --text-muted:  rgba(255, 255, 255, 0.5);
+}
+
+/* ─────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────── */
+.dashboard-page {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────
+   VIDEO BACKGROUND
+───────────────────────────────────────── */
+.video-bg-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.video-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Subtle slow-zoom feel — purely optional, remove if it feels too much */
+  transform: scale(1.04);
+}
+
+/* Dark base overlay — controls how much video shows through */
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+/* Soft vignette to frame the edges */
+.video-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+}
+
+/* ─────────────────────────────────────────
+   CONTENT WRAPPER
+───────────────────────────────────────── */
+.dashboard-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 5rem 4rem 4rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ─────────────────────────────────────────
+   ANIMATION HELPERS
+───────────────────────────────────────── */
+.fade-in          { animation: slideUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.delay-1          { animation-delay: 0.15s; opacity: 0; }
+.delay-2          { animation-delay: 0.3s;  opacity: 0; }
+.delay-3          { animation-delay: 0.45s; opacity: 0; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.dashboard-hero {
+  margin-bottom: 3rem;
+  opacity: 0;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+}
+
+.dashboard-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.08;
+  margin-bottom: 1.4rem;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.hero-accent {
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.dashboard-hero p {
+  max-width: 520px;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ─────────────────────────────────────────
+   DIVIDER
+───────────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--glass-bd) 30%,
+    rgba(0, 255, 136, 0.25) 50%,
+    var(--glass-bd) 70%,
+    transparent
+  );
+  margin-bottom: 3rem;
+  opacity: 0;
+}
+
+/* ─────────────────────────────────────────
+   INFO CARDS
+───────────────────────────────────────── */
+.info-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 3.5rem;
+  opacity: 0;
+}
+
+.dashboard-card {
+  background: var(--glass-bg);
+  padding: 1.8rem 1.6rem;
+  border-radius: 12px;
+  border: 1px solid var(--glass-bd);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  cursor: default;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0, 255, 136, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 255, 136, 0.08);
+}
+
+.card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.9rem;
+  line-height: 1;
+}
+
+.dashboard-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  margin-bottom: 0.65rem;
+}
+
+.dashboard-card p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ─────────────────────────────────────────
+   STATUS
+───────────────────────────────────────── */
+.status-section {
+  opacity: 0;
+}
+
+.status-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1.1rem;
+}
+
+.status-indicators {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.status-box {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-bd);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.status-box.active {
+  color: #fff;
+  border-color: rgba(0, 255, 136, 0.2);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #444;
+  flex-shrink: 0;
+}
+
+.status-box.active .status-dot {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 6px var(--accent); }
+  50%       { box-shadow: 0 0 14px var(--accent), 0 0 24px rgba(0,255,136,0.3); }
+}
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 992px) {
+  .dashboard-content {
+    padding: 3rem 1.8rem 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-content {
+    padding: 2rem 1.2rem 2rem;
+  }
+  .dashboard-hero h1 {
+    font-size: 2.2rem;
+  }
+  .info-section {
+    grid-template-columns: 1fr;
+  }
+}

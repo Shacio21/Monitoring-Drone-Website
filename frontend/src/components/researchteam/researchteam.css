@@ -1,0 +1,439 @@
+/* ============================================================
+   researchteam.css — Research Team · POLMAN Drone Center
+   Aesthetic: Classified Dossier / Aerospace Personnel Registry
+   Dark, structured, monochrome with per-person hue accents
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Overpass+Mono:wght@400;500;600&display=swap');
+
+/* ── Variables ── */
+:root {
+  --rt-bg: #07090d;
+  --rt-surface: #0e1219;
+  --rt-surface-2: #141b25;
+  --rt-border: rgba(255,255,255,0.07);
+  --rt-border-bright: rgba(255,255,255,0.13);
+  --rt-text: #d4e2ee;
+  --rt-text-2: #5a7590;
+  --rt-text-3: #2e4055;
+  --rt-font: 'Chakra Petch', sans-serif;
+  --rt-mono: 'Overpass Mono', monospace;
+}
+
+/* ── Section ── */
+.rteam {
+  position: relative;
+  background: var(--rt-bg);
+  padding: 120px 0 80px;
+  overflow: hidden;
+}
+
+/* ── Background ── */
+.rteam__bg { position: absolute; inset: 0; pointer-events: none; }
+
+.bg-dot-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.07;
+}
+.bg-glow--a {
+  width: 600px; height: 400px;
+  top: -100px; left: -100px;
+  background: hsl(200,100%,55%);
+}
+.bg-glow--b {
+  width: 500px; height: 350px;
+  bottom: -80px; right: -80px;
+  background: hsl(52,100%,55%);
+}
+
+/* ── Header ── */
+.rteam__header {
+  max-width: 1200px;
+  margin: 0 auto 64px;
+  padding: 0 6%;
+}
+
+.rteam__header > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.rteam__header--visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:0.05s; }
+.rteam__header--visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.18s; }
+.rteam__header--visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.3s; }
+
+.rteam__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.ey-num {
+  font-family: var(--rt-mono);
+  font-size: 0.72rem;
+  color: hsl(200,80%,60%);
+}
+.ey-line {
+  flex: 0 0 32px;
+  height: 1px;
+  background: hsl(200,60%,40%);
+  opacity: 0.5;
+}
+.ey-label {
+  font-family: var(--rt-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rt-text-2);
+}
+
+.rteam__title {
+  font-family: var(--rt-font);
+  font-weight: 700;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--rt-text);
+  margin-bottom: 14px;
+}
+.rteam__title em {
+  font-style: italic;
+  font-weight: 300;
+  color: hsl(52,90%,65%);
+}
+
+.rteam__subtitle {
+  font-family: var(--rt-mono);
+  font-size: 0.8rem;
+  color: var(--rt-text-2);
+  letter-spacing: 0.05em;
+}
+
+/* ── Tiers ── */
+.rteam__tier {
+  max-width: 1200px;
+  margin: 0 auto 8px;
+  padding: 0 6%;
+}
+.rteam__tier--center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tier-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.tier-label__badge {
+  font-family: var(--rt-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: 1px solid var(--rt-border-bright);
+  color: var(--rt-text-2);
+  border-radius: 2px;
+}
+.tier-label__badge--ketua {
+  border-color: hsl(52,70%,40%);
+  color: hsl(52,80%,65%);
+}
+.tier-label__badge--anggota {
+  border-color: hsl(200,50%,30%);
+  color: hsl(200,70%,60%);
+}
+.tier-label__count {
+  font-family: var(--rt-mono);
+  font-size: 0.62rem;
+  color: var(--rt-text-3);
+}
+
+/* ── Grids ── */
+.tier-grid--pembimbing {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.tier-grid--ketua {
+  width: 100%;
+  max-width: 480px;
+}
+.tier-grid--anggota {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* ── Member Card ── */
+.member-card {
+  background: var(--rt-surface);
+  border: 1px solid var(--rt-border);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  transition-delay: var(--mc-delay, 0s);
+  cursor: default;
+}
+
+.member-card--visible {
+  opacity: 1;
+  transform: none;
+}
+
+.member-card:hover {
+  border-color: hsl(var(--mc-hue), 60%, 40%);
+  box-shadow: 0 0 32px hsl(var(--mc-hue), 60%, 20%, 0.25),
+              inset 0 0 40px hsl(var(--mc-hue), 60%, 10%, 0.15);
+}
+
+.member-card--pembimbing {
+  border-top: 2px solid hsl(var(--mc-hue), 65%, 45%);
+}
+
+.member-card--featured {
+  padding: 28px;
+  border: 1px solid hsl(var(--mc-hue), 60%, 30%);
+  box-shadow: 0 0 60px hsl(var(--mc-hue), 70%, 15%, 0.4);
+  background: var(--rt-surface-2);
+}
+
+/* Accent bar bottom */
+.mc-accent-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    hsl(var(--mc-hue), 70%, 50%) 50%,
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.member-card:hover .mc-accent-bar { opacity: 1; }
+
+/* Top row */
+.mc-top {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.mc-identity {
+  flex: 1;
+  min-width: 0;
+}
+.mc-role {
+  display: block;
+  font-family: var(--rt-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(var(--mc-hue), 60%, 55%);
+  margin-bottom: 4px;
+}
+.mc-nama {
+  font-family: var(--rt-font);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--rt-text);
+  line-height: 1.3;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.member-card--featured .mc-nama {
+  font-size: 1.15rem;
+  white-space: normal;
+}
+.mc-divisi {
+  font-family: var(--rt-mono);
+  font-size: 0.6rem;
+  color: var(--rt-text-2);
+}
+
+/* ID line */
+.mc-id-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--rt-border);
+  margin-bottom: 12px;
+  border-radius: 2px;
+}
+.mc-id-label {
+  font-family: var(--rt-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--rt-text-3);
+}
+.mc-id-value {
+  font-family: var(--rt-mono);
+  font-size: 0.65rem;
+  color: hsl(var(--mc-hue), 55%, 55%);
+  letter-spacing: 0.08em;
+}
+
+/* Skills */
+.mc-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.mc-skill {
+  font-family: var(--rt-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  padding: 3px 7px;
+  border: 1px solid hsl(var(--mc-hue), 40%, 25%);
+  color: hsl(var(--mc-hue), 55%, 55%);
+  border-radius: 2px;
+  background: hsl(var(--mc-hue), 40%, 8%);
+  white-space: nowrap;
+}
+
+/* ── Avatar ── */
+.avatar {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid hsl(var(--av-hue), 50%, 25%);
+}
+.avatar__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.avatar__initials {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--rt-font);
+  font-weight: 700;
+  font-size: calc(var(--av-size, 72px) * 0.28);
+  color: hsl(var(--av-hue), 70%, 85%);
+  letter-spacing: 0.05em;
+}
+.avatar__crown {
+  position: absolute;
+  top: -2px;
+  right: 4px;
+  z-index: 2;
+}
+.avatar__star {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.65rem;
+  color: hsl(52, 90%, 65%);
+  z-index: 2;
+}
+.avatar--pembimbing {
+  border-color: hsl(var(--av-hue), 55%, 35%);
+  box-shadow: 0 0 16px hsl(var(--av-hue), 60%, 20%, 0.5);
+}
+.avatar--ketua {
+  border-color: hsl(52, 70%, 40%);
+  box-shadow: 0 0 20px hsl(52, 80%, 20%, 0.6);
+}
+
+/* ── Org Connector ── */
+.org-connector {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 6%;
+  height: 60px;
+}
+.org-connector svg { width: 100%; height: 100%; }
+
+.org-connector-simple {
+  display: flex;
+  justify-content: center;
+  height: 40px;
+  margin-bottom: 8px;
+}
+.ocs-line {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
+}
+
+/* ── Stats Bar ── */
+.rteam__stats {
+  max-width: 1200px;
+  margin: 56px auto 0;
+  padding: 32px 6%;
+  border-top: 1px solid var(--rt-border);
+  display: flex;
+  justify-content: space-around;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.rstat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.rstat__v {
+  font-family: var(--rt-font);
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--rt-text);
+  line-height: 1;
+}
+.rstat__l {
+  font-family: var(--rt-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rt-text-2);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .tier-grid--anggota { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .tier-grid--pembimbing { grid-template-columns: 1fr 1fr; }
+  .tier-grid--anggota { grid-template-columns: repeat(2, 1fr); }
+  .org-connector { display: none; }
+}
+
+@media (max-width: 560px) {
+  .tier-grid--pembimbing,
+  .tier-grid--anggota { grid-template-columns: 1fr; }
+  .rteam { padding: 80px 0 60px; }
+  .mc-nama { font-size: 0.85rem; }
+}
