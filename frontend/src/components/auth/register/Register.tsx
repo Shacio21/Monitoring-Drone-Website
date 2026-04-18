@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
 import "./register.css";
 
 // ── Types ──────────────────────────────────────────────────
@@ -37,35 +38,62 @@ interface RegisterResponse {
 
 type StrengthLevel = "weak" | "fair" | "good" | "strong" | "";
 
-// ── Topic Tooltip Data ─────────────────────────────────────
-const TOPIC_TOOLTIPS: Record<string, { title: string; json: string }> = {
+// ── Topic Info Data ────────────────────────────────────────
+type TopicInfoType = "json" | "url";
+
+interface TopicInfo {
+  title: string;
+  description: string;
+  type: TopicInfoType;
+  content: string;
+}
+
+const TOPIC_INFO: Record<string, TopicInfo> = {
   battery_topic: {
-    title: "Contoh format JSON payload:",
-    json: JSON.stringify(
+    title: "Battery Topic — Format JSON",
+    description: "Payload yang dikirim broker MQTT ke topic ini harus mengikuti struktur berikut:",
+    type: "json",
+    content: JSON.stringify(
       { voltage: 6.816, current: 0.034, power: 0.231744, pwm: 41 },
       null, 2
     ),
   },
   water_topic: {
-    title: "Contoh format JSON payload:",
-    json: JSON.stringify(
+    title: "Water Topic — Format JSON",
+    description: "Payload yang dikirim broker MQTT ke topic ini harus mengikuti struktur berikut:",
+    type: "json",
+    content: JSON.stringify(
       { currentL: 0, maxL: 10, flowRate: 0, sessionUsed: 10, sprayStatus: "Empty" },
       null, 2
     ),
   },
   attitude_topic: {
-    title: "Contoh format JSON payload:",
-    json: JSON.stringify(
+    title: "Attitude Topic — Format JSON",
+    description: "Payload yang dikirim broker MQTT ke topic ini harus mengikuti struktur berikut:",
+    type: "json",
+    content: JSON.stringify(
       { roll: 19.7, pitch: -23.1, yaw: 116.9, rollSP: 0, pitchSP: 0, yawSP: 0, rollRate: 8.2, pitchRate: -5, yawRate: -7.9 },
       null, 2
     ),
   },
   gps_topic: {
-    title: "Contoh format JSON payload:",
-    json: JSON.stringify(
+    title: "GPS Topic — Format JSON",
+    description: "Payload yang dikirim broker MQTT ke topic ini harus mengikuti struktur berikut:",
+    type: "json",
+    content: JSON.stringify(
       { latitude: -6.919024, longitude: 107.6175, altitude: 26.4999, speed: 15.5, heading: 50.5, accuracy: 1.7, satellites: 14, fixType: "3D Fix", hdop: 1 },
       null, 2
     ),
+  },
+  video_url: {
+    title: "Video URL — Contoh Format",
+    description: "Masukkan URL stream video dari perangkat. Format yang didukung:",
+    type: "url",
+    content: [
+      "http://127.0.0.1:3000/video",
+      "rtsp://192.168.1.1:8554/stream",
+      "http://192.168.1.1:8080/?action=stream",
+    ].join("\n"),
   },
 };
 
@@ -79,7 +107,141 @@ function InfoIcon() {
   );
 }
 
-// ── Tooltip Wrapper ────────────────────────────────────────
+// ── Copy Button ────────────────────────────────────────────
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <button
+      type="button"
+      className={`copy-btn ${copied ? "copied" : ""}`}
+      onClick={handleCopy}
+      aria-label="Salin ke clipboard"
+    >
+      {copied ? (
+        <>
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+            <path d="M2 5.5L4.5 8L9 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Tersalin!
+        </>
+      ) : (
+        <>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+          Salin
+        </>
+      )}
+    </button>
+  );
+}
+
+// ── Info Modal ─────────────────────────────────────────────
+interface InfoModalProps {
+  info: TopicInfo;
+  onClose: () => void;
+}
+
+function InfoModal({ info, onClose }: InfoModalProps) {
+  return createPortal(
+    <div
+      className="info-modal-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={info.title}
+    >
+      <div
+        className="info-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="info-modal__header">
+          <div>
+            <p className="info-modal__badge">
+              {info.type === "json" ? "JSON PAYLOAD" : "URL FORMAT"}
+            </p>
+            <h3 className="info-modal__title">{info.title}</h3>
+          </div>
+          <button
+            type="button"
+            className="info-modal__close"
+            onClick={onClose}
+            aria-label="Tutup"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <p className="info-modal__desc">{info.description}</p>
+
+        <div className="info-modal__code-wrap">
+          <div className="info-modal__code-header">
+            <span className="info-modal__code-lang">
+              {info.type === "json" ? "JSON" : "URL"}
+            </span>
+            <CopyButton text={info.content} />
+          </div>
+          {info.type === "json" ? (
+            <pre className="info-modal__code info-modal__code--json">
+              {info.content.split("\n").map((line, i) => {
+                const keyMatch = line.match(/^(\s*)"([^"]+)"(\s*:\s*)(.*)/);
+                if (keyMatch) {
+                  return (
+                    <span key={i}>
+                      {keyMatch[1]}
+                      <span className="json-key">&quot;{keyMatch[2]}&quot;</span>
+                      <span className="json-colon">{keyMatch[3]}</span>
+                      <span className={
+                        /^"/.test(keyMatch[4].trim()) ? "json-string" :
+                        /^(true|false|null)/.test(keyMatch[4].trim()) ? "json-bool" :
+                        "json-number"
+                      }>{keyMatch[4]}</span>
+                      {"\n"}
+                    </span>
+                  );
+                }
+                return <span key={i}>{line}{"\n"}</span>;
+              })}
+            </pre>
+          ) : (
+            <div className="info-modal__code info-modal__code--url">
+              {info.content.split("\n").map((url, i) => (
+                <div key={i} className="url-line">
+                  <span className="url-scheme">{url.split("://")[0]}://</span>
+                  <span className="url-rest">{url.split("://")[1]}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {info.type === "json" && (
+          <p className="info-modal__note">
+            ⚠ Pastikan device mengirim payload dengan <strong>key yang sama persis</strong> (case-sensitive).
+          </p>
+        )}
+        {info.type === "url" && (
+          <p className="info-modal__note">
+            ℹ Gunakan format HTTP untuk streaming lokal, atau RTSP untuk kamera IP.
+          </p>
+        )}
+      </div>
+    </div>
+    , document.body
+  );
+}
+
+// ── Topic Label Wrapper ────────────────────────────────────
 interface TopicLabelProps {
   htmlFor: string;
   fieldName: string;
@@ -87,31 +249,27 @@ interface TopicLabelProps {
 }
 
 function TopicLabel({ htmlFor, fieldName, children }: TopicLabelProps) {
-  const [visible, setVisible] = useState(false);
-  const tooltip = TOPIC_TOOLTIPS[fieldName];
-  if (!tooltip) return <label htmlFor={htmlFor}>{children}</label>;
+  const [open, setOpen] = useState(false);
+  const info = TOPIC_INFO[fieldName];
+  if (!info) return <label htmlFor={htmlFor}>{children}</label>;
 
   return (
-    <label htmlFor={htmlFor} className="topic-label-wrap">
-      {children}
-      <span
-        className="topic-info-btn"
-        tabIndex={0}
-        role="button"
-        aria-label={`Info format ${fieldName}`}
-        onClick={(e) => { e.preventDefault(); setVisible((v) => !v); }}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setVisible((v) => !v); }}
-        onBlur={() => setVisible(false)}
-      >
-        <InfoIcon />
-        {visible && (
-          <div className="topic-tooltip" role="tooltip">
-            <p className="topic-tooltip__title">{tooltip.title}</p>
-            <pre className="topic-tooltip__json">{tooltip.json}</pre>
-          </div>
-        )}
-      </span>
-    </label>
+    <>
+      <label htmlFor={htmlFor} className="topic-label-wrap">
+        {children}
+        <span
+          className="topic-info-btn"
+          tabIndex={0}
+          role="button"
+          aria-label={`Lihat format ${fieldName}`}
+          onClick={(e) => { e.preventDefault(); setOpen(true); }}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen(true); }}
+        >
+          <InfoIcon />
+        </span>
+      </label>
+      {open && <InfoModal info={info} onClose={() => setOpen(false)} />}
+    </>
   );
 }
 
@@ -465,15 +623,15 @@ export default function RegisterPage() {
 
             {/* Video URL */}
             <div className="form-field">
-              <label htmlFor="video_url">
+              <TopicLabel htmlFor="video_url" fieldName="video_url">
                 Video URL <span className="label-optional">opsional</span>
-              </label>
+              </TopicLabel>
               <input
                 id="video_url" name="video_url" type="text"
-                placeholder="rtsp://192.168.1.1:8554/stream"
+                placeholder="http://127.0.0.1:3000/video"
                 value={device.video_url} onChange={handleDeviceChange}
               />
-              <p className="field-hint">Supports RTSP, HTTP, atau URL stream lainnya</p>
+              <p className="field-hint">Klik ikon ⓘ untuk melihat contoh format URL</p>
             </div>
 
             {/* Terms */}
